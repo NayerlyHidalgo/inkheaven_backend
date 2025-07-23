@@ -29,13 +29,15 @@ __tests__
 *.test.*
 *.spec.*
 *.e2e-spec.*
-jest.config.*
-.eslintrc.*
-eslint.config.*
 .prettierrc
 .prettierignore
-tsconfig*.json
-nest-cli.json
 *.md
 docs
 documentation
+
+# NO ignorar archivos necesarios para el build:
+!package.json
+!package-lock.json
+!tsconfig.json
+!tsconfig.build.json
+!nest-cli.json
