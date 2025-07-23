@@ -14,27 +14,49 @@ export class CategoriesService {
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    // Verificar si el nombre ya existe
-    const existingCategory = await this.categoryRepository.findOne({
-      where: { name: createCategoryDto.name }
-    });
+    try {
+      // Verificar si el nombre ya existe
+      const existingCategory = await this.categoryRepository.findOne({
+        where: { name: createCategoryDto.name }
+      });
 
-    if (existingCategory) {
-      throw new ConflictException('Ya existe una categoría con ese nombre');
-    }
+      if (existingCategory) {
+        throw new ConflictException('Ya existe una categoría con ese nombre');
+      }
 
-    // Si no se especifica orden, asignar el siguiente número
-    if (createCategoryDto.orden === undefined) {
-      const maxOrder = await this.categoryRepository
-        .createQueryBuilder('category')
-        .select('MAX(category.orden)', 'max')
-        .getRawOne();
+      // Preparar los datos para crear la categoría
+      const categoryData = {
+        name: createCategoryDto.name,
+        description: createCategoryDto.description || '',
+        icono: createCategoryDto.icono || '',
+        activa: createCategoryDto.activa !== false, // default true
+        orden: createCategoryDto.orden
+      };
+
+      // Si no se especifica orden, asignar el siguiente número
+      if (categoryData.orden === undefined) {
+        try {
+          const maxOrder = await this.categoryRepository
+            .createQueryBuilder('category')
+            .select('MAX(category.orden)', 'max')
+            .getRawOne();
+          
+          categoryData.orden = (maxOrder.max || 0) + 1;
+        } catch (error) {
+          console.error('Error getting max order:', error);
+          categoryData.orden = 1; // fallback
+        }
+      }
+
+      const category = this.categoryRepository.create(categoryData);
+      const savedCategory = await this.categoryRepository.save(category);
+      console.log('Category created successfully:', savedCategory);
+      return savedCategory;
       
-      createCategoryDto.orden = (maxOrder.max || 0) + 1;
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
     }
-
-    const category = this.categoryRepository.create(createCategoryDto);
-    return await this.categoryRepository.save(category);
   }
 
   async findAll(includeInactive: boolean = false): Promise<Category[]> {
