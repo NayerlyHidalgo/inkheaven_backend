@@ -1,0 +1,80 @@
+# Render.com Configuration
+services:
+  - type: web
+    name: ink-heaven-backend
+    env: docker
+    plan: starter
+    region: oregon
+    buildCommand: docker build -t ink-heaven-backend .
+    startCommand: docker run -p $PORT:3000 ink-heaven-backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: ink-heaven-backend
+          property: port
+      - key: API_PREFIX
+        value: api/v1
+      
+      # PostgreSQL Database (Neon)
+      - key: DB_HOST
+        value: ep-lively-sun-aacyqxnp-pooler.westus3.azure.neon.tech
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USERNAME
+        value: neondb_owner
+      - key: DB_PASSWORD
+        sync: false  # Set as secret in dashboard: npg_of5RCcqbj8Ti
+      - key: DB_NAME
+        value: neondb
+      - key: DB_SSL
+        value: true
+      
+      # MongoDB Atlas
+      - key: MONGODB_URI
+        sync: false  # Set as secret in dashboard: mongodb+srv://meliferj1995:M3l5N128.12@clustermongoutenh.m2ekh9a.mongodb.net/ink_heaven_logs?retryWrites=true&w=majority&appName=ClusterMongoUteNH&maxPoolSize=10&serverSelectionTimeoutMS=5000&connectTimeoutMS=10000&family=4
+      
+      # JWT Configuration
+      - key: JWT_SECRET
+        sync: false  # Set as secret in dashboard: npg_XvWzBkJr49UP
+      - key: JWT_EXPIRES_IN
+        value: 365d
+      
+      # Email Configuration
+      - key: GMAIL_USER
+        value: melifer.j1995@gmail.com
+      - key: GMAIL_APP_PASSWORD
+        sync: false  # Set as secret in dashboard: llmm elbg vyac mqrs
+      
+      # Production Settings
+      - key: CORS_ORIGIN
+        value: "*"  # Update with your frontend domains
+      - key: RATE_LIMIT_TTL
+        value: 60
+      - key: RATE_LIMIT_LIMIT
+        value: 100
+      - key: LOG_LEVEL
+        value: info
+      - key: LOG_FORMAT
+        value: combined
+      - key: MAX_FILE_SIZE
+        value: 5242880
+      - key: UPLOAD_DEST
+        value: ./uploads
+
+# Optional: Database services (can also use external services)
+databases:
+  - name: ink-heaven-postgres
+    plan: starter
+    region: oregon
+    
+# Optional: Background jobs or cron jobs
+# jobs:
+#   - type: cron
+#     name: cleanup-logs
+#     schedule: "0 2 * * *"  # Daily at 2 AM
+#     buildCommand: npm install
+#     startCommand: npm run cleanup:logs

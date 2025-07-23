@@ -1,0 +1,81 @@
+# Docker Compose para desarrollo local
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: ink-heaven-postgres
+    environment:
+      POSTGRES_DB: ink_heaven_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ink-heaven-network
+
+  # Base de datos MongoDB
+  mongodb:
+    image: mongo:6-alpine
+    container_name: ink-heaven-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: ink_heaven_logs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ink-heaven-network
+
+  # Aplicación Backend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ink-heaven-backend
+    environment:
+      # Variables de entorno para desarrollo
+      NODE_ENV: development
+      PORT: 3000
+      
+      # Base de datos PostgreSQL
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres123
+      DB_NAME: ink_heaven_db
+      
+      # Base de datos MongoDB
+      MONGODB_URI: mongodb://admin:admin123@mongodb:27017/ink_heaven_logs?authSource=admin
+      
+      # JWT
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRES_IN: 7d
+      
+      # Configuración de la aplicación
+      API_PREFIX: api/v1
+      
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - mongodb
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - ink-heaven-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  mongodb_data:
+
+networks:
+  ink-heaven-network:
+    driver: bridge

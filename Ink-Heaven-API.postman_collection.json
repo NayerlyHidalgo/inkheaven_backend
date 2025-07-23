@@ -1,0 +1,1619 @@
+{
+	"info": {
+		"_postman_id": "ink-heaven-api-collection",
+		"name": "Ink Heaven API - Complete CRUD",
+		"description": "Colección completa para probar todos los endpoints de la API de Ink Heaven con autenticación JWT y control de roles.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3101",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"client\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Register Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Admin access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Admin Principal\",\n  \"email\": \"admin@inkheaven.com\",\n  \"password\": \"admin123\",\n  \"phone\": \"+1987654321\",\n  \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Admin access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@inkheaven.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Register Artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Artist access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Carlos Tattoo\",\n  \"email\": \"carlos@inkheaven.com\",\n  \"password\": \"artist123\",\n  \"phone\": \"+1555666777\",\n  \"role\": \"artist\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login Artist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.collectionVariables.set('access_token', response.access_token);",
+									"        console.log('Artist access token saved:', response.access_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos@inkheaven.com\",\n  \"password\": \"artist123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏥 Health Check",
+			"item": [
+				{
+					"name": "Health General",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					}
+				},
+				{
+					"name": "Health PostgreSQL",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/postgres",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health",
+								"postgres"
+							]
+						}
+					}
+				},
+				{
+					"name": "Health MongoDB",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/mongodb",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health",
+								"mongodb"
+							]
+						}
+					}
+				},
+				{
+					"name": "Health Detailed",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/detailed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health",
+								"detailed"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👥 Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phone\": \"+1234567899\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🛍️ Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Tinta Negra Premium\",\n  \"description\": \"Tinta de alta calidad para tatuajes profesionales\",\n  \"price\": 45.99,\n  \"category\": \"ink\",\n  \"brand\": \"InkMaster\",\n  \"stock\": 50,\n  \"imageUrl\": \"https://example.com/tinta-negra.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price\": 49.99,\n  \"stock\": 45\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Products by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/style/ink",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"style",
+								"ink"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Products by Price Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/price-range/20/100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"price-range",
+								"20",
+								"100"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎨 Artists",
+			"item": [
+				{
+					"name": "Create Artist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Carlos Mendoza\",\n  \"email\": \"carlos@inkheaven.com\",\n  \"phone\": \"+1234567891\",\n  \"specialties\": [\"realismo\", \"blackwork\"],\n  \"experience\": 8,\n  \"bio\": \"Artista especializado en realismo con más de 8 años de experiencia\",\n  \"hourlyRate\": 120,\n  \"availability\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/artists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Artists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Available Artists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/available",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"available"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Featured Artists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"featured"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Artist Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"me"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Artist by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Artist",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"hourlyRate\": 150,\n  \"bio\": \"Artista especializado en realismo y blackwork con más de 8 años de experiencia\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/artists/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Artist Availability",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/1/toggle-availability",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"1",
+								"toggle-availability"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Artist Portfolio Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/1/portfolio-summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"1",
+								"portfolio-summary"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Artist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/artists/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"artists",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📅 Appointments",
+			"item": [
+				{
+					"name": "Create Appointment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"artistId\": 1,\n  \"dateTime\": \"2025-08-15T14:00:00Z\",\n  \"duration\": 120,\n  \"description\": \"Tatuaje de rosa en el brazo\",\n  \"estimatedPrice\": 240,\n  \"status\": \"pending\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/appointments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/my-appointments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"my-appointments"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Upcoming Appointments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/upcoming",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"upcoming"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Appointments by Artist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/artist/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"artist",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Appointments by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/user/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"user",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Appointment by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Appointment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Tatuaje de rosa roja en el antebrazo\",\n  \"estimatedPrice\": 280\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/appointments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Appointment Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"confirmed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/appointments/1/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"1",
+								"status"
+							]
+						}
+					}
+				},
+				{
+					"name": "Check Artist Availability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/availability/1/2025-08-15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"availability",
+								"1",
+								"2025-08-15"
+							]
+						}
+					}
+				},
+				{
+					"name": "Cancel Appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/1/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"1",
+								"cancel"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⭐ Reviews",
+			"item": [
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"artistId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Excelente trabajo, muy profesional y detallista\",\n  \"designTitle\": \"Rosa Realista\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Featured Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"featured"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Reviews by Artist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/artist/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"artist",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Artist Review Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/artist/1/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"artist",
+								"1",
+								"stats"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Reviews by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/user/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"user",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Review by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excelente trabajo, muy profesional, detallista y puntual. Lo recomiendo 100%\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Moderate Review",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"approved\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/reviews/1/moderate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"1",
+								"moderate"
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Featured Review",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/1/toggle-featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"1",
+								"toggle-featured"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reviews/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reviews",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎨 Portfolio",
+			"item": [
+				{
+					"name": "Create Portfolio Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Rosa Realista\",\n  \"description\": \"Tatuaje de rosa realista en blanco y negro\",\n  \"style\": \"realismo\",\n  \"bodyPart\": \"brazo\",\n  \"duration\": 120,\n  \"imageUrl\": \"https://example.com/rosa-realista.jpg\",\n  \"tags\": [\"realismo\", \"rosa\", \"blanco y negro\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/portfolio",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Featured Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"featured"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Popular Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/popular",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"popular"
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/search?q=rosa",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "rosa"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Portfolio by Style",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/style/realismo",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"style",
+								"realismo"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Portfolio by Artist",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/artist/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"artist",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Artist Portfolio Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/artist/1/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"artist",
+								"1",
+								"stats"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Portfolio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/my-portfolio",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"my-portfolio"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Portfolio Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Portfolio Item",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Tatuaje de rosa realista en blanco y negro con sombreado detallado\",\n  \"tags\": [\"realismo\", \"rosa\", \"blanco y negro\", \"sombreado\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/portfolio/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "Like Portfolio Item",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/1/like",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1",
+								"like"
+							]
+						}
+					}
+				},
+				{
+					"name": "Unlike Portfolio Item",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/1/unlike",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1",
+								"unlike"
+							]
+						}
+					}
+				},
+				{
+					"name": "Toggle Featured Portfolio",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/1/toggle-featured",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1",
+								"toggle-featured"
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Portfolio Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/portfolio/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"portfolio",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
