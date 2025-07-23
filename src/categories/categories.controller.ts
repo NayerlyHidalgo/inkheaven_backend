@@ -20,7 +20,6 @@ import { Category } from './category.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { UserRole } from '../users/enums/user-role.enum';
 
 @Controller('categories')
 export class CategoriesController {
@@ -29,7 +28,7 @@ export class CategoriesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden crear categorías
+  @Roles('admin') // Cambiar a string simple
   async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
     return await this.categoriesService.create(createCategoryDto);
   }
@@ -46,7 +45,7 @@ export class CategoriesController {
 
   @Get('stats')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden ver estadísticas
+  @Roles('admin') // Solo admins pueden ver estadísticas
   async getStats() {
     return await this.categoriesService.getStats();
   }
@@ -63,14 +62,14 @@ export class CategoriesController {
 
   @Patch('reorder')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden reordenar
+  @Roles('admin') // Solo admins pueden reordenar
   async reorder(@Body() reorderDto: ReorderCategoriesDto): Promise<Category[]> {
     return await this.categoriesService.reorder(reorderDto);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden actualizar
+  @Roles('admin') // Solo admins pueden actualizar
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -80,21 +79,21 @@ export class CategoriesController {
 
   @Patch(':id/toggle-active')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden activar/desactivar
+  @Roles('admin') // Solo admins pueden activar/desactivar
   async toggleActive(@Param('id') id: string): Promise<Category> {
     return await this.categoriesService.toggleActive(id);
   }
 
   @Patch(':id/activate')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden activar
+  @Roles('admin') // Solo admins pueden activar
   async activate(@Param('id') id: string): Promise<Category> {
     return await this.categoriesService.activate(id);
   }
 
   @Patch(':id/deactivate')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden desactivar
+  @Roles('admin') // Solo admins pueden desactivar
   async deactivate(@Param('id') id: string): Promise<Category> {
     return await this.categoriesService.deactivate(id);
   }
@@ -102,7 +101,7 @@ export class CategoriesController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN) // Solo admins pueden eliminar
+  @Roles('admin') // Solo admins pueden eliminar
   async remove(@Param('id') id: string): Promise<void> {
     return await this.categoriesService.remove(id);
   }

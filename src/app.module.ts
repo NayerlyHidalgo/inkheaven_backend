@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { HealthModule } from './health/health.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { HealthModule } from './health/health.module';
     ReviewsModule,
     PortfolioModule,
     HealthModule,
+    CategoriesModule,
     // Temporarily disabled problematic modules:
     // CartModule,
     // InvoicesModule, 
