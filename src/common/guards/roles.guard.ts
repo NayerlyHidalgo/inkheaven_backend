@@ -12,15 +12,37 @@ export class RolesGuard implements CanActivate {
     ]);
 
     if (!requiredRoles) {
+      console.log('🔒 RolesGuard - No se requieren roles específicos, acceso permitido');
       return true;
     }
 
-    const { user } = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest();
+    const { user } = request;
+    
+    console.log('🔒 RolesGuard - Request completo:', {
+      headers: request.headers?.authorization,
+      user: request.user,
+      userFromDestructuring: user
+    });
     console.log('🔒 RolesGuard - Usuario:', user);
     console.log('🔒 RolesGuard - Roles requeridos:', requiredRoles);
-    console.log('🔒 RolesGuard - Rol del usuario:', user.role);
+    console.log('🔒 RolesGuard - Rol del usuario:', user?.role);
+    console.log('🔒 RolesGuard - Tipo del rol:', typeof user?.role);
+    
+    if (!user) {
+      console.log('🔒 RolesGuard - ❌ No hay usuario en el request');
+      return false;
+    }
+    
+    if (!user.role) {
+      console.log('🔒 RolesGuard - ❌ Usuario no tiene rol definido');
+      return false;
+    }
     
     // Corregir la validación: user.role es un string, no un array
-    return requiredRoles.some((role) => user.role === role);
+    const hasPermission = requiredRoles.some((role) => user.role === role);
+    console.log('🔒 RolesGuard - ¿Tiene permisos?', hasPermission);
+    
+    return hasPermission;
   }
 }
