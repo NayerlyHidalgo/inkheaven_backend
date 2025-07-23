@@ -10,7 +10,7 @@ export class Category {
   name: string;
 
   @Column('text', { nullable: true })
-  descripcion: string;
+  description: string;
 
   @Column({ nullable: true })
   icono: string; // URL del icono de la categoría

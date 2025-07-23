@@ -6,7 +6,7 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsString()
-  descripcion?: string;
+  description?: string;
 
   @IsOptional()
   @IsString()
