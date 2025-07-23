@@ -28,7 +28,11 @@ async function bootstrap() {
   );
 
   // Enable CORS
-  const corsOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()) : true;
+  const corsOrigins = process.env.CORS_ORIGIN 
+    ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+    : ['http://localhost:3000', 'http://localhost:3001']; // Default origins for development
+  
+  console.log('CORS Origins configured:', corsOrigins);
   
   app.enableCors({
     origin: corsOrigins,

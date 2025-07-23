@@ -48,6 +48,10 @@ import { HealthModule } from './health/health.module';
     ReviewsModule,
     PortfolioModule,
     HealthModule,
+    // Temporarily disabled problematic modules:
+    // CartModule,
+    // InvoicesModule, 
+    // OrdenModule,
   ],
   controllers: [AppController],
   providers: [AppService],
