@@ -35,7 +35,13 @@ export class CategoriesController {
 
   @Get()
   async findAll(@Query('includeInactive', new ParseBoolPipe({ optional: true })) includeInactive?: boolean): Promise<Category[]> {
-    return await this.categoriesService.findAll(includeInactive || false);
+    try {
+      return await this.categoriesService.findAll(includeInactive || false);
+    } catch (error) {
+      console.error('Error getting categories:', error);
+      // Si hay error con la tabla, devolver array vacío
+      return [];
+    }
   }
 
   @Get('active')

@@ -38,16 +38,22 @@ export class CategoriesService {
   }
 
   async findAll(includeInactive: boolean = false): Promise<Category[]> {
-    const queryBuilder = this.categoryRepository.createQueryBuilder('category');
-    
-    if (!includeInactive) {
-      queryBuilder.where('category.activa = :activa', { activa: true });
+    try {
+      const queryBuilder = this.categoryRepository.createQueryBuilder('category');
+      
+      if (!includeInactive) {
+        queryBuilder.where('category.activa = :activa', { activa: true });
+      }
+      
+      return await queryBuilder
+        .orderBy('category.orden', 'ASC')
+        .addOrderBy('category.name', 'ASC')
+        .getMany();
+    } catch (error) {
+      console.error('Error in findAll categories:', error);
+      // Si la tabla no existe o hay error, devolver array vacío
+      return [];
     }
-    
-    return await queryBuilder
-      .orderBy('category.orden', 'ASC')
-      .addOrderBy('category.name', 'ASC')
-      .getMany();
   }
 
   async findAllActive(): Promise<Category[]> {
