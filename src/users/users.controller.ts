@@ -8,10 +8,10 @@ import { GetUser } from '../common/decorators/get-user.decorator';
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get('profile')
-  async getOwnProfile(@GetUser('id') userId: number) {
+  async getOwnProfile(@GetUser('id') userId: string) {
     return await this.usersService.findById(userId);
   }
 
@@ -25,21 +25,21 @@ export class UsersController {
   @Get(':id')
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getUserById(@Param('id') id: string) {
     return await this.usersService.findById(id);
   }
 
   @Patch(':id')
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async updateUser(@Param('id', ParseIntPipe) id: number, @Body() updateData: any) {
+  async updateUser(@Param('id') id: string, @Body() updateData: any) {
     return await this.usersService.updateUser(id, updateData);
   }
 
   @Delete(':id')
   @UseGuards(RolesGuard)
   @Roles('admin')
-  async deactivateUser(@Param('id', ParseIntPipe) id: number) {
+  async deactivateUser(@Param('id') id: string) {
     await this.usersService.deactivateUser(id);
     return { message: 'User deactivated successfully' };
   }

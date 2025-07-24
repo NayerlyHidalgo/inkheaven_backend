@@ -1,90 +1,107 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from './schemas/user.schema';
 import { RegisterDto } from '../auth/dto/register.dto';
 import * as bcrypt from 'bcrypt';
+import { UserWithoutPassword } from './user.types';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
+  /**
+   * Buscar usuario por email (con contraseña incluida)
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    return await this.userModel.findOne({ email }).exec();
+  }
+
+  /**
+   * Crear nuevo usuario
+   */
   async create(registerDto: RegisterDto): Promise<User> {
     const { email, password, ...userData } = registerDto;
 
-    // Check if user already exists
-    const existingUser = await this.userRepository.findOne({ where: { email } });
+    const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
-      throw new ConflictException('User with this email already exists');
+      throw new ConflictException('El correo ya está en uso');
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
-    const user = this.userRepository.create({
+    const createdUser = new this.userModel({
       ...userData,
       email,
       password: hashedPassword,
     });
 
-    const savedUser = await this.userRepository.save(user);
-    
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = savedUser;
-    return userWithoutPassword as User;
+    return await createdUser.save();
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return await this.userRepository.findOne({ where: { email } });
+  /**
+   * Buscar usuario por ID (con contraseña)
+   */
+  async findById(id: string): Promise<User | null> {
+    return await this.userModel.findById(id).exec();
   }
 
-  async findById(id: number): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { id } });
+  /**
+   * Buscar usuario por ID (sin contraseña)
+   */
+  async findByIdWithoutPassword(id: string): Promise<UserWithoutPassword> {
+    const user = await this.userModel.findById(id).select('-password').exec();
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Usuario no encontrado');
     }
-    
-    // Remove password from response
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword as User;
+
+    return user.toObject() as UserWithoutPassword;
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.userRepository.find();
-    // Remove passwords from response
-    return users.map(user => {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword as User;
-    });
+  /**
+   * Obtener todos los usuarios (sin contraseñas)
+   */
+  async findAll(): Promise<UserWithoutPassword[]> {
+    const users = await this.userModel.find().select('-password').exec();
+    return users.map(user => user.toObject() as UserWithoutPassword);
   }
 
-  async updateLastLogin(id: number): Promise<void> {
-    await this.userRepository.update(id, { lastLogin: new Date() });
+  /**
+   * Actualizar fecha de último inicio de sesión
+   */
+  async updateLastLogin(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, { updatedAt: new Date() });
   }
 
+  /**
+   * Validar contraseña
+   */
   async validatePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return await bcrypt.compare(plainPassword, hashedPassword);
   }
 
-  async updateUser(id: number, updateData: Partial<User>): Promise<User | null> {
-    const user = await this.findById(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
+  /**
+   * Actualizar datos del usuario
+   */
+  async updateUser(id: string, updateData: Partial<User>): Promise<UserWithoutPassword | null> {
     if (updateData.password) {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
 
-    await this.userRepository.update(id, updateData);
-    return await this.findById(id);
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, updateData, { new: true })
+      .select('-password')
+      .exec();
+
+    return updatedUser ? (updatedUser.toObject() as UserWithoutPassword) : null;
   }
 
-  async deactivateUser(id: number): Promise<void> {
-    await this.userRepository.update(id, { isActive: false });
+  /**
+   * Desactivar usuario
+   */
+  async deactivateUser(id: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(id, { isActive: false });
   }
 }

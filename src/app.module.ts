@@ -14,12 +14,16 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { HealthModule } from './health/health.module';
 import { CategoriesModule } from './categories/categories.module';
+// Import only entities that should be in PostgreSQL
+import { Product } from './products/entities/product.entity';
+import { Artist } from './artists/artist.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    // PostgreSQL - Solo para products, artists, appointments
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -28,9 +32,9 @@ import { CategoriesModule } from './categories/categories.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-      autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production', // Only in development
-      logging: process.env.NODE_ENV === 'development',
+      entities: [Product, Artist], // Solo entidades que van en PostgreSQL
+      synchronize: true, // Recrear las tablas
+      logging: true,
       extra: {
         connectionLimit: 10,
         acquireConnectionTimeout: 60000,
@@ -39,17 +43,18 @@ import { CategoriesModule } from './categories/categories.module';
         query_timeout: 60000,
       },
     }),
+    // MongoDB - Para users y categories 
     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/ink-heaven'),
     CommonModule,
     AuthModule,
     ProductsModule,
     ArtistsModule,
     AppointmentsModule,
-    UsersModule,
+    UsersModule,  // Ahora usa MongoDB
     ReviewsModule,
     PortfolioModule,
     HealthModule,
-    CategoriesModule,
+    CategoriesModule,  // Ahora usa MongoDB
     // Temporarily disabled problematic modules:
     // CartModule,
     // InvoicesModule, 

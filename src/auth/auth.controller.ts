@@ -23,13 +23,13 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getProfile(@GetUser('id') userId: number) {
+  async getProfile(@GetUser('id') userId: string) {
     return await this.authService.getProfile(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  async refreshToken(@GetUser('id') userId: number) {
+  async refreshToken(@GetUser('id') userId: string) {
     return await this.authService.refreshToken(userId);
   }
 

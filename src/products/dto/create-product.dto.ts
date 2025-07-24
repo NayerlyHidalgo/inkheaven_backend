@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsIn, Min, Max } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsIn, Min, Max, IsBoolean, IsArray } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -18,12 +18,18 @@ export class CreateProductDto {
   @Min(0)
   price: number;
 
-  @IsOptional()
-  @IsString()
-  imageUrl?: string;
-
   @IsString()
   size: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  stock?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
 
   @IsOptional()
   @IsString()
@@ -31,13 +37,24 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsString()
-  colors?: string;
+  color?: string;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Max(24)
-  estimatedHours?: number;
+  estimatedTime?: number;
+
+  @IsOptional()
+  @IsString()
+  sku?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isPopular?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 
   @IsOptional()
   @IsIn(['draft', 'published', 'archived'])

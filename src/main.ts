@@ -6,11 +6,11 @@ import { HttpExceptionFilter, LoggingInterceptor, TimeoutInterceptor } from './c
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Global validation pipe
+  // Global validation pipe - configuración más permisiva para desarrollo
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false, // Cambiado a false para permitir campos adicionales
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,

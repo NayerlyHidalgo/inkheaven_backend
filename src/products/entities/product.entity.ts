@@ -20,6 +20,9 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
+  @Column({ type: 'int', default: 0 })
+  stock: number;
+
   @Column({ type: 'varchar', length: 500, nullable: true })
   imageUrl: string;
 
@@ -43,6 +46,21 @@ export class Product {
 
   @Column({ type: 'text', nullable: true })
   tags: string;
+
+  @Column({ type: 'text', nullable: true })
+  color: string;
+
+  @Column({ type: 'int', default: 2 })
+  estimatedTime: number;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  sku: string;
+
+  @Column({ type: 'boolean', default: false })
+  isPopular: boolean;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
